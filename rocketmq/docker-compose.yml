@@ -1,0 +1,25 @@
+services:
+  namesrv:
+    image: apache/rocketmq:4.5.2
+    hostname: namesrv
+    container_name: rocketmq-namesrv
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+    volumes:
+      - ./data/namesrv/logs:/root/logs
+      - ./data/namesrv/store:/root/store
+  broker:
+    image: apache/rocketmq:4.5.2
+    hostname: broker
+    container_name: rocketmq-broker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    command: sh mqbroker -n namesrv:9876
+    depends_on:
+      - namesrv
+    volumes:
+      - ./data/broker/logs:/root/logs
+      - ./data/broker/store:/root/store
